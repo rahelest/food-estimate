@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 
 function List({ list, setList, emptyRow }) {
@@ -6,11 +6,21 @@ function List({ list, setList, emptyRow }) {
         const copy = [...list];
         copy[index][field] = value;
         setList(copy);
+
+        if (index + 1 === copy.length && copy[index].grams) {
+            addRow();
+        }
     }
 
-    function addRow(index) {
+    function onChangeDate(value, index) {
+        let newValue = value.replace(/(\d)(\d\d)/, "$1.$2");
+        newValue = value.replace(/(\d)\.?(\d)(\d\d)/, "$1$2.$3");
+        onChangeData("date", newValue, index);
+    }
+
+    function addRow() {
         const copy = [...list];
-        copy.push({...emptyRow});
+        copy.push({ ...emptyRow });
         setList(copy);
     }
 
@@ -20,19 +30,44 @@ function List({ list, setList, emptyRow }) {
         setList(copy);
     }
 
+    function clear() {
+        setList([{ ...emptyRow }]);
+    }
+
+    useEffect(() => {
+        try {
+            localStorage.setItem("list", JSON.stringify(list));
+        } catch (err) {
+            //shrug
+        }
+    });
+
     return (
         <>
-        <button onClick={addRow}>+</button> <br />
+            <button onClick={addRow}>+</button>{" "}
+            <button onClick={clear}>Clear</button> <br />
             {list.map((el, index) => (
                 <div className="row" key={index}>
                     <input
-                        value={el.date}
+                        style={{ width: "70px" }}
+                        type="text"
+                        value={el.name}
+                        placeholder="Name"
                         onChange={e =>
-                            onChangeData("date", e.target.value, index)
+                            onChangeData("name", e.target.value, index)
                         }
                     />
                     <input
+                        style={{ width: "40px", textAlign: "center" }}
+                        value={el.date}
+                        onChange={e => onChangeDate(e.target.value, index)}
+                    />
+                    <input
+                        style={{ width: "60px", textAlign: "right" }}
+                        type="number"
+                        min="0"
                         value={el.grams}
+                        placeholder="Grams"
                         onChange={e =>
                             onChangeData("grams", e.target.value, index)
                         }

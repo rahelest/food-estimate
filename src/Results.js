@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-function Results({ list }) {
+function Results({ list, setList }) {
     const { date, expirations } = calculateResults(list);
     return (
         <div className="results">
