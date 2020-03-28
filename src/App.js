@@ -6,9 +6,10 @@ import "./App.css";
 function App() {
     const emptyRow = { name: "", date: "", grams: "" };
     const [list, setList] = useState(load("list") || [{ ...emptyRow }]);
-    const [perDay, setPerDay] = useState(load("perDay") || 1000);
+    const [perDay, setPerDay] = useState(parseInt(load("perDay"), 10) || 1000);
 
-    function onChangePerDay(value) {
+    function onChangePerDay(e) {
+        const value = e.target.value;
         setPerDay(value);
         try {
             localStorage.setItem("perDay", JSON.stringify(value));
@@ -20,7 +21,7 @@ function App() {
         <div className="App">
             <input value={perDay} onChange={onChangePerDay} style={{ width: "70px" }} />
             <List list={list} setList={setList} emptyRow={emptyRow} />
-            <Results list={list} setList={setList} />
+            <Results list={list} setList={setList} perDay={perDay} />
         </div>
     );
 }

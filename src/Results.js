@@ -1,23 +1,117 @@
+import * as R from "ramda";
+import moment from "moment";
 import React from "react";
 import "./App.css";
 
-function Results({ list, setList }) {
-    const { date, expirations } = calculateResults(list);
+function Results({ list, setList, perDay }) {
+    const omitEmpty = list.filter(({ grams }) => grams);
+    const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay);
     return (
         <div className="results">
-            Food: {list.length} <br />
-            Days until: {date} <br />
-            {expirations && renderExpirations(expirations)}
+            Food: {omitEmpty.length} <br />
+            {date && (
+                <>
+                    Days until: {date} <br />
+                    {renderExpirations(expirations)}
+                </>
+            )}
+            <br />
+            {date && (
+                <>
+                    Plan: <br />
+                    <ul
+                        style={{
+                            textAlign: "left",
+                            margin: "0 auto",
+                            display: "inline-block"
+                        }}
+                    >
+                        {renderPlan(datePlan)}
+                    </ul>
+                </>
+            )}
         </div>
     );
 }
 
 export default Results;
 
-function renderExpirations(expirations) {
-    if (!expirations.length) return false;
+function renderPlan(plan) {
+    return R.toPairs(plan).map(([day, food], index) => (
+        <li key={index}>
+            <div style={{ color: "#666" }}>{day}: </div>
+            <ul>
+                {food.map(({ foodItem: { name, date, grams } }, ind2) => (
+                    <li key={ind2}>
+                        {name} ({grams}g),{" "}
+                        {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+                    </li>
+                ))}
+            </ul>
+        </li>
+    ));
 }
 
-function calculateResults(list) {
-    return { date: undefined, expirations: [] };
+function renderExpirations(expirations) {
+    if (!expirations.length) return false;
+
+    return expirations.map(obj => <>{JSON.stringify(obj)}</>);
 }
+
+function calculateResults(list, perDay) {
+    if (perDay < 700 || perDay > 4000) return {};
+    const expirations = [];
+    const plan = [];
+    const sortableDate = list.map(obj => ({
+        ...obj,
+        date: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1")
+    }));
+    const dateAsc = R.comparator((a, b) => a.date < b.date);
+    const sorted = R.sort(dateAsc, sortableDate);
+
+    let activeDay = moment().add(1, "day");
+    let activeDayUsed = 0;
+
+    for (const foodItem of sorted) {
+        if (moment(foodItem.date, "MMDD").isBefore(activeDay)) {
+            expirations.push(foodItem);
+        }
+
+        activeDayUsed += parseInt(foodItem.grams, 10);
+        plan.push({ day: activeDay, foodItem });
+        while (activeDayUsed >= perDay) {
+            // next day, carry over
+            activeDay = moment(activeDay).add(1, "day");
+            activeDayUsed = activeDayUsed - perDay;
+            plan.push({ day: activeDay.format("ddd, DD.MM"), foodItem });
+
+            if (moment(foodItem.date, "MMDD").isBefore(activeDay)) {
+                expirations.push(foodItem);
+            }
+        }
+    }
+
+    const byDate = R.groupBy(({ day }) => day);
+    const datePlan = byDate(plan);
+
+    return { date: activeDay.format("ddd, DD.MM"), expirations, datePlan };
+}
+
+/*
+
+
+02.04.2020	500
+03.04.2020	400
+03.04.2020	400
+03.04.2020	450
+03.04.2020	450
+03.04.2020	500
+03.04.2020	500
+03.04.2020	500
+04.04.2020	280
+09.04.2020	500
+09.04.2020	500
+28.03.2020	400
+29.03.2020	400
+31.03.2020	600
+31.03.2020	600*/
