@@ -1,26 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import List from "./List";
+import Results from "./Results";
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const emptyRow = { date: "", grams: "" };
+    const [list, setList] = useState([{...emptyRow}]);
+    return (
+        <div className="App">
+            <List list={list} setList={setList} emptyRow={emptyRow} />
+            <Results list={list} />
+        </div>
+    );
 }
 
 export default App;
