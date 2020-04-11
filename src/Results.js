@@ -8,17 +8,14 @@ function Results({ list, setList, perDay }) {
     const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay);
     return (
         <div className="results">
-            Food: {omitEmpty.length} <br />
+            Food: {omitEmpty.length} - Days until: {date} <p />
+            <div style={{float: "left"}}>
+            {date && renderExpirations(expirations)}
+            </div>
+            <div style={{float: "left"}}>
             {date && (
                 <>
-                    Days until: {date} <br />
-                    {renderExpirations(expirations)}
-                </>
-            )}
-            <br />
-            {date && (
-                <>
-                    Plan: <br />
+                    <em>Plan:</em> <p/>
                     <ul
                         style={{
                             textAlign: "left",
@@ -30,6 +27,7 @@ function Results({ list, setList, perDay }) {
                     </ul>
                 </>
             )}
+            </div>
         </div>
     );
 }
@@ -55,7 +53,18 @@ function renderPlan(plan) {
 function renderExpirations(expirations) {
     if (!expirations.length) return false;
 
-    return expirations.map(obj => <>{JSON.stringify(obj)}</>);
+    const expirationList = expirations.map(({ name, date, grams }, ind2) => (
+        <li key={ind2}>
+            {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+        </li>
+    ));
+
+    return (
+        <>
+            <em>Food that will expire:</em> <p/>
+            <ul>{expirationList}</ul>
+        </>
+    );
 }
 
 function calculateResults(list, perDay) {
