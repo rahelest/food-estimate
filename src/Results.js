@@ -73,20 +73,23 @@ function calculateResults(list, perDay) {
     const plan = [];
     const sortableDate = list.map(obj => ({
         ...obj,
-        date: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1")
+        dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
+        dateMoment: moment(obj.date, "DDMM"),
+        grams: parseInt(obj.grams, 10),
     }));
-    const dateAsc = R.comparator((a, b) => a.date < b.date);
+    const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay);
     const sorted = R.sort(dateAsc, sortableDate);
 
     let activeDay = moment().add(1, "day");
     let activeDayUsed = 0;
 
     for (const foodItem of sorted) {
-        if (moment(foodItem.date, "MMDD").isBefore(activeDay)) {
+        if (foodItem.dateMoment.isBefore(activeDay)) {
             expirations.push(foodItem);
+            continue;
         }
 
-        activeDayUsed += parseInt(foodItem.grams, 10);
+        activeDayUsed += foodItem.grams;
         plan.push({ day: activeDay, foodItem });
         while (activeDayUsed >= perDay) {
             // next day, carry over
