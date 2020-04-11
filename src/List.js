@@ -49,7 +49,7 @@ function List({ list, setList, emptyRow }) {
             {list.map((el, index) => (
                 <div className="row" key={index}>
                     <input
-                        style={{ width: "70px" }}
+                        style={{ width: "6em" }}
                         type="text"
                         value={el.name}
                         placeholder="Name"
@@ -58,12 +58,13 @@ function List({ list, setList, emptyRow }) {
                         }
                     />
                     <input
-                        style={{ width: "40px", textAlign: "center" }}
+                        style={{ width: "3em", textAlign: "center" }}
                         value={el.date}
+                        placeholder="Date"
                         onChange={e => onChangeDate(e.target.value, index)}
                     />
                     <input
-                        style={{ width: "60px", textAlign: "right" }}
+                        style={{ width: "3em", textAlign: "right" }}
                         type="number"
                         min="0"
                         value={el.grams}
