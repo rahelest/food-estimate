@@ -9,24 +9,24 @@ function Results({ list, setList, perDay }) {
     return (
         <div className="results">
             Food: {omitEmpty.length} - Days until: {date} <p />
-            <div style={{float: "left"}}>
-            {date && renderExpirations(expirations)}
+            <div style={{ float: "left" }}>
+                {date && renderExpirations(expirations)}
             </div>
-            <div style={{float: "left"}}>
-            {date && (
-                <>
-                    <em>Plan:</em> <p/>
-                    <ul
-                        style={{
-                            textAlign: "left",
-                            margin: "0 auto",
-                            display: "inline-block"
-                        }}
-                    >
-                        {renderPlan(datePlan)}
-                    </ul>
-                </>
-            )}
+            <div style={{ float: "left" }}>
+                {date && (
+                    <>
+                        <em>Plan:</em> <p />
+                        <ul
+                            style={{
+                                textAlign: "left",
+                                margin: "0 auto",
+                                display: "inline-block"
+                            }}
+                        >
+                            {renderPlan(datePlan)}
+                        </ul>
+                    </>
+                )}
             </div>
         </div>
     );
@@ -39,12 +39,14 @@ function renderPlan(plan) {
         <li key={index}>
             <div style={{ color: "#666" }}>{day}: </div>
             <ul>
-                {food.map(({ foodItem: { name, date, grams } }, ind2) => (
-                    <li key={ind2}>
-                        {name} ({grams}g),{" "}
-                        {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
-                    </li>
-                ))}
+                {food.map(
+                    ({ foodItem: { name, date, grams, usedGrams } }, ind2) => (
+                        <li key={ind2}>
+                            {name} ({usedGrams} / {grams}g),{" "}
+                            {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+                        </li>
+                    )
+                )}
             </ul>
         </li>
     ));
@@ -61,10 +63,15 @@ function renderExpirations(expirations) {
 
     return (
         <>
-            <em>Food that will expire:</em> <p/>
+            <em>Food that will expire:</em> <p />
             <ul>{expirationList}</ul>
         </>
     );
+}
+
+function isExpired(foodItem, activeDay) {
+    return foodItem.dateMoment.isBefore(activeDay, "day");
+    // || foodItem.dateMoment.isSame(activeDay, "day")
 }
 
 function calculateResults(list, perDay) {
@@ -75,7 +82,7 @@ function calculateResults(list, perDay) {
         ...obj,
         dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
         dateMoment: moment(obj.date, "DDMM"),
-        grams: parseInt(obj.grams, 10),
+        grams: parseInt(obj.grams, 10)
     }));
     const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay);
     const sorted = R.sort(dateAsc, sortableDate);
@@ -84,24 +91,42 @@ function calculateResults(list, perDay) {
     let activeDayUsed = 0;
 
     for (const foodItem of sorted) {
-        if (foodItem.dateMoment.isBefore(activeDay)) {
+        if (isExpired(foodItem, activeDay)) {
             expirations.push(foodItem);
             continue;
         }
 
         activeDayUsed += foodItem.grams;
-        plan.push({ day: activeDay, foodItem });
+        console.log(foodItem);
+        foodItem.usedGrams =
+            activeDayUsed >= perDay
+                ? foodItem.grams - (activeDayUsed - perDay)
+                : foodItem.grams;
+        plan.push({
+            day: activeDay.format("ddd, DD.MM"),
+            foodItem: {...foodItem}
+        });
         while (activeDayUsed >= perDay) {
             // next day, carry over
             activeDay = moment(activeDay).add(1, "day");
             activeDayUsed = activeDayUsed - perDay;
-            plan.push({ day: activeDay.format("ddd, DD.MM"), foodItem });
 
-            if (moment(foodItem.date, "MMDD").isBefore(activeDay)) {
-                expirations.push(foodItem);
+            if (activeDayUsed > 0) {
+                foodItem.usedGrams = foodItem.grams - foodItem.usedGrams;
+
+                plan.push({
+                    day: activeDay.format("ddd, DD.MM"),
+                    foodItem: {...foodItem}
+                });
+
+                if (isExpired(foodItem, activeDay)) {
+                    expirations.push(foodItem);
+                }
             }
         }
     }
+
+    console.log(plan);
 
     const byDate = R.groupBy(({ day }) => day);
     const datePlan = byDate(plan);

@@ -49,7 +49,7 @@ function List({ list, setList, emptyRow }) {
             {list.map((el, index) => (
                 <div className="row" key={index}>
                     <input
-                        style={{ width: "6em" }}
+                        style={{ width: "9em" }}
                         type="text"
                         value={el.name}
                         placeholder="Name"
