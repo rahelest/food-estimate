@@ -40,9 +40,9 @@ function renderPlan(plan) {
             <div style={{ color: "#666" }}>{day}: </div>
             <ul>
                 {food.map(
-                    ({ foodItem: { name, date, grams, usedGrams } }, ind2) => (
+                    ({ foodItem: { name, date, grams, usedGrams, amount, nr } }, ind2) => (
                         <li key={ind2}>
-                            {name} ({usedGrams} / {grams}g),{" "}
+                            {name} #{nr} ({usedGrams} / {grams}g),{" "}
                             {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
                         </li>
                     )
@@ -82,10 +82,13 @@ function calculateResults(list, perDay) {
         ...obj,
         dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
         dateMoment: moment(obj.date, "DDMM"),
-        grams: parseInt(obj.grams, 10)
+        grams: parseInt(obj.grams, 10),
     }));
+    const duplicateByAmount = sortableDate.flatMap(food => {
+        return R.times((i) => ({...food, nr: i + 1}), food.amount);
+    });
     const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay);
-    const sorted = R.sort(dateAsc, sortableDate);
+    const sorted = R.sort(dateAsc, duplicateByAmount);
 
     let activeDay = moment().add(1, "day");
     let activeDayUsed = 0;

@@ -4,7 +4,7 @@ import Results from "./Results";
 import "./App.css";
 
 function App() {
-    const emptyRow = { name: "", date: "", grams: "" };
+    const emptyRow = { name: "", date: "", grams: "", amount: 1 };
     const [list, setList] = useState(load("list") || [{ ...emptyRow }]);
     const [perDay, setPerDay] = useState(parseInt(load("perDay"), 10) || 1000);
 

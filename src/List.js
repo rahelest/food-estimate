@@ -73,6 +73,17 @@ function List({ list, setList, emptyRow }) {
                             onChangeData("grams", e.target.value, index)
                         }
                     />
+
+                    <input
+                        style={{ width: "2em", textAlign: "right" }}
+                        type="number"
+                        min="1"
+                        value={el.amount}
+                        placeholder="Amount"
+                        onChange={e =>
+                            onChangeData("amount", e.target.value, index)
+                        }
+                    />
                     <button onClick={() => removeRow(index)}>-</button>
                 </div>
             ))}
