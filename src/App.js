@@ -19,7 +19,8 @@ function App() {
     }
     return (
         <div className="App">
-            <input value={perDay} onChange={onChangePerDay} style={{ width: "70px" }} />
+        <h2>Food estimator!</h2>
+            Food consumed per day: <input value={perDay} onChange={onChangePerDay} style={{ width: "60px", textAlign: "center" }} /> grams
             <List list={list} setList={setList} emptyRow={emptyRow} />
             <Results list={list} setList={setList} perDay={perDay} />
         </div>

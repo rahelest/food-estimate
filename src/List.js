@@ -43,10 +43,8 @@ function List({ list, setList, emptyRow }) {
     });
 
     return (
-        <>
-            <button onClick={addRow}>+</button>{" "}
-            <button onClick={clear}>Clear</button> <br />
-            <table style={{margin: "0 auto"}}>
+        <p>
+            <table style={{ margin: "0 auto" }}>
                 <tr>
                     <th>Name</th>
                     <th>Date</th>
@@ -105,12 +103,17 @@ function List({ list, setList, emptyRow }) {
                             />
                         </td>
                         <td>
-                            <button onClick={() => removeRow(index)}>-</button>
+                            <button onClick={() => removeRow(index)}>×</button>
                         </td>
                     </tr>
                 ))}
             </table>
-        </>
+
+            <p>
+                <button onClick={addRow}>Add row</button>{" "}
+                <button onClick={clear}>Clear list</button>
+            </p>
+        </p>
     );
 }
 

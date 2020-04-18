@@ -8,26 +8,22 @@ function Results({ list, setList, perDay }) {
     const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay);
     return (
         <div className="results">
-            Food: {omitEmpty.length} - Days until: {date} <p />
-            <div style={{ float: "left" }}>
-                {date && renderExpirations(expirations)}
-            </div>
-            <div style={{ float: "left" }}>
-                {date && (
-                    <>
-                        <em>Plan:</em> <p />
-                        <ul
-                            style={{
-                                textAlign: "left",
-                                margin: "0 auto",
-                                display: "inline-block"
-                            }}
-                        >
-                            {renderPlan(datePlan)}
-                        </ul>
-                    </>
-                )}
-            </div>
+            Food: {omitEmpty.length} item(s) - Lasts until: {date} <p />
+            {date && renderExpirations(expirations)}
+            {date && (
+                <div style={{ float: "left" }}>
+                    <h3>Plan:</h3> <p />
+                    <ul
+                        style={{
+                            textAlign: "left",
+                            margin: "0 auto",
+                            display: "inline-block",
+                        }}
+                    >
+                        {renderPlan(datePlan)}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 }
@@ -40,7 +36,19 @@ function renderPlan(plan) {
             <div style={{ color: "#666" }}>{day}: </div>
             <ul>
                 {food.map(
-                    ({ foodItem: { name, date, grams, usedGrams, amount, nr } }, ind2) => (
+                    (
+                        {
+                            foodItem: {
+                                name,
+                                date,
+                                grams,
+                                usedGrams,
+                                amount,
+                                nr,
+                            },
+                        },
+                        ind2
+                    ) => (
                         <li key={ind2}>
                             {name} #{nr} ({usedGrams} / {grams}g),{" "}
                             {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
@@ -62,10 +70,10 @@ function renderExpirations(expirations) {
     ));
 
     return (
-        <>
-            <em>Food that will expire:</em> <p />
+        <div style={{ float: "left", marginRight: "40px" }}>
+            <h3>Food that will expire:</h3> <p />
             <ul>{expirationList}</ul>
-        </>
+        </div>
     );
 }
 
@@ -75,17 +83,17 @@ function isExpired(foodItem, activeDay) {
 }
 
 function calculateResults(list, perDay) {
-    if (perDay < 700 || perDay > 4000) return {};
+    if (perDay < 400 || perDay > 4000) return {};
     const expirations = [];
     const plan = [];
-    const sortableDate = list.map(obj => ({
+    const sortableDate = list.map((obj) => ({
         ...obj,
         dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
         dateMoment: moment(obj.date, "DDMM"),
         grams: parseInt(obj.grams, 10),
     }));
-    const duplicateByAmount = sortableDate.flatMap(food => {
-        return R.times((i) => ({...food, nr: i + 1}), food.amount);
+    const duplicateByAmount = sortableDate.flatMap((food) => {
+        return R.times((i) => ({ ...food, nr: i + 1 }), food.amount);
     });
     const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay);
     const sorted = R.sort(dateAsc, duplicateByAmount);
@@ -107,7 +115,7 @@ function calculateResults(list, perDay) {
                 : foodItem.grams;
         plan.push({
             day: activeDay.format("ddd, DD.MM"),
-            foodItem: {...foodItem}
+            foodItem: { ...foodItem },
         });
         while (activeDayUsed >= perDay) {
             // next day, carry over
@@ -119,7 +127,7 @@ function calculateResults(list, perDay) {
 
                 plan.push({
                     day: activeDay.format("ddd, DD.MM"),
-                    foodItem: {...foodItem}
+                    foodItem: { ...foodItem },
                 });
 
                 if (isExpired(foodItem, activeDay)) {
