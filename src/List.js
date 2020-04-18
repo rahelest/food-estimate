@@ -47,7 +47,7 @@ function List({ list, setList, emptyRow }) {
             <table style={{ margin: "0 auto" }}>
                 <tr>
                     <th>Name</th>
-                    <th>Date</th>
+                    <th>Date<span title="Enter DDMM and see how the dot appears automatically!">(!)</span></th>
                     <th>Grams</th>
                     <th>Amount</th>
                 </tr>
