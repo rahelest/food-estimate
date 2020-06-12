@@ -96,6 +96,7 @@ function List({ list, setList, emptyRow }) {
                                 min="1"
                                 value={el.amount}
                                 placeholder="Amount"
+                                onClick={(e) => e.target.select(9)}
                                 onChange={(e) =>
                                     onChangeData(
                                         "amount",
