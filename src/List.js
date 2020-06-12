@@ -44,18 +44,21 @@ function List({ list, setList, emptyRow }) {
 
     return (
         <p>
-            <table style={{ margin: "0 auto" }}>
-                <tr>
-                    <th>Name</th>
-                    <th>Date<span title="Enter DDMM and see how the dot appears automatically!">(!)</span></th>
-                    <th>Grams</th>
-                    <th>Amount</th>
-                </tr>
+            <div className="food-input">
+                <div className="row">
+                    <div class="col-md-6">Name</div>
+                    <div class="col-md-2">
+                        Date
+                        <span title="Enter DDMM and see how dive dot appears automatically!">*</span>
+                    </div>
+                    <div class="col-md-2">Grams</div>
+                    <div class="col-md-1">#</div>
+                    <div class="col-md-1"></div>
+                </div>
                 {list.map((el, index) => (
-                    <tr className="row" key={index}>
-                        <td>
+                    <div className="row" key={index}>
+                        <div class="col-md-6">
                             <input
-                                style={{ width: "9em" }}
                                 type="text"
                                 value={el.name}
                                 placeholder="Name"
@@ -63,20 +66,20 @@ function List({ list, setList, emptyRow }) {
                                     onChangeData("name", e.target.value, index)
                                 }
                             />
-                        </td>
-                        <td>
+                        </div>
+                        <div class="col-md-2">
                             <input
-                                style={{ width: "3em", textAlign: "center" }}
+                                style={{ textAlign: "center" }}
                                 value={el.date}
                                 placeholder="Date"
                                 onChange={(e) =>
                                     onChangeDate(e.target.value, index)
                                 }
                             />
-                        </td>
-                        <td>
+                        </div>
+                        <div class="col-md-2">
                             <input
-                                style={{ width: "3em", textAlign: "right" }}
+                                style={{ textAlign: "right" }}
                                 type="number"
                                 min="0"
                                 value={el.grams}
@@ -85,10 +88,10 @@ function List({ list, setList, emptyRow }) {
                                     onChangeData("grams", e.target.value, index)
                                 }
                             />
-                        </td>
-                        <td>
+                        </div>
+                        <div class="col-md-1">
                             <input
-                                style={{ width: "2em", textAlign: "right" }}
+                                style={{ textAlign: "right" }}
                                 type="number"
                                 min="1"
                                 value={el.amount}
@@ -101,13 +104,13 @@ function List({ list, setList, emptyRow }) {
                                     )
                                 }
                             />
-                        </td>
-                        <td>
-                            <button onClick={() => removeRow(index)}>×</button>
-                        </td>
-                    </tr>
+                        </div>
+                        <div class="col-md-1">
+                            <button class="x" onClick={() => removeRow(index)}>×</button>
+                        </div>
+                    </div>
                 ))}
-            </table>
+            </div>
 
             <p>
                 <button onClick={addRow}>Add row</button>{" "}
