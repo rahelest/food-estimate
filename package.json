@@ -37,6 +37,6 @@
         "tabWidth": 4
     },
     "engines": {
-    "yarn": ">1.19"
+    "yarn": ">=1.19"
   }
 }
