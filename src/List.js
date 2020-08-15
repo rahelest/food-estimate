@@ -47,12 +47,12 @@ function List({ list, setList, emptyRow }) {
             <div className="food-input">
                 <div className="row">
                     <div class="col-md-6">Name</div>
+                    <div class="col-md-1">#</div>
                     <div class="col-md-2">
                         Date
                         <span title="Enter DDMM and see how dive dot appears automatically!">*</span>
                     </div>
                     <div class="col-md-2">Grams</div>
-                    <div class="col-md-1">#</div>
                     <div class="col-md-1"></div>
                 </div>
                 {list.map((el, index) => (
