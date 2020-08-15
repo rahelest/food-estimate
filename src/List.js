@@ -67,9 +67,27 @@ function List({ list, setList, emptyRow }) {
                                 }
                             />
                         </div>
+                        <div class="col-md-1">
+                            <input
+                                style={{ textAlign: "right" }}
+                                type="number"
+                                min="1"
+                                value={el.amount}
+                                placeholder="Amount"
+                                onClick={(e) => e.target.select(9)}
+                                onChange={(e) =>
+                                    onChangeData(
+                                        "amount",
+                                        e.target.value,
+                                        index
+                                    )
+                                }
+                            />
+                        </div>
                         <div class="col-md-2">
                             <input
                                 style={{ textAlign: "center" }}
+                                type="number"
                                 value={el.date}
                                 placeholder="Date"
                                 onChange={(e) =>
@@ -86,23 +104,6 @@ function List({ list, setList, emptyRow }) {
                                 placeholder="Grams"
                                 onChange={(e) =>
                                     onChangeData("grams", e.target.value, index)
-                                }
-                            />
-                        </div>
-                        <div class="col-md-1">
-                            <input
-                                style={{ textAlign: "right" }}
-                                type="number"
-                                min="1"
-                                value={el.amount}
-                                placeholder="Amount"
-                                onClick={(e) => e.target.select(9)}
-                                onChange={(e) =>
-                                    onChangeData(
-                                        "amount",
-                                        e.target.value,
-                                        index
-                                    )
                                 }
                             />
                         </div>
