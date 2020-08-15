@@ -88,6 +88,8 @@ function List({ list, setList, emptyRow }) {
                             <input
                                 style={{ textAlign: "center" }}
                                 type="number"
+                                step="0.01"
+                                lang="en"
                                 value={el.date}
                                 placeholder="Date"
                                 onChange={(e) =>
