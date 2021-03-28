@@ -1,6 +1,5 @@
 import * as R from "ramda";
 import moment from "moment";
-import React from "react";
 import "./App.css";
 
 function Results({ list, setList, perDay }) {

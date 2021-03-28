@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import List from "./List";
 import Results from "./Results";
 import "./App.css";
