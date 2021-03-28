@@ -50,7 +50,9 @@ function List({ list, setList, emptyRow }) {
                     <div class="col-md-1">#</div>
                     <div class="col-md-2">
                         Date
-                        <span title="Enter DDMM and see how dive dot appears automatically!">*</span>
+                        <span title="Enter DDMM and see how dive dot appears automatically!">
+                            *
+                        </span>
                     </div>
                     <div class="col-md-2">Grams</div>
                     <div class="col-md-1"></div>
@@ -110,7 +112,9 @@ function List({ list, setList, emptyRow }) {
                             />
                         </div>
                         <div class="col-md-1">
-                            <button class="x" onClick={() => removeRow(index)}>×</button>
+                            <button class="x" onClick={() => removeRow(index)}>
+                                ×
+                            </button>
                         </div>
                     </div>
                 ))}
