@@ -87,7 +87,7 @@ function calculateResults(
     dateMoment: moment(obj.date, "DDMM"),
   }))
   const duplicateByAmount: HelperFoodRow[] = sortableDate.flatMap((food) => {
-    return R.times((i) => ({ ...food, nr: i + 1 }), food.amount)
+    return R.times((i) => ({ ...food, nr: i + 1 }), food.amount || 1)
   })
   const dateAsc = R.comparator((a: HelperFoodRow, b: HelperFoodRow) => {
     return a.dateMonthDay < b.dateMonthDay
