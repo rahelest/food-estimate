@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useLocalStorage } from "../composables/useLocalStorage"
 import { FoodRow } from "../models"
+import styles from "./List.module.css"
 
 type Props = {
   list: FoodRow[]
@@ -48,22 +49,22 @@ function List({ list, setList, emptyRow }: Props) {
 
   return (
     <div>
-      <div className="food-input">
-        <div className="row">
-          <div className="col-md-6">Name</div>
-          <div className="col-md-1">#</div>
-          <div className="col-md-2">
+      <div className={styles.foodInput}>
+        <div className={styles.foodRow}>
+          <div className={styles.foodColumnName}>Name</div>
+          <div className={styles.foodColumnAmount}>#</div>
+          <div className={styles.foodColumnDate}>
             Date
             <span title="Enter DDMM and see how dive dot appears automatically!">
               *
             </span>
           </div>
-          <div className="col-md-2">Grams</div>
-          <div className="col-md-1" />
+          <div className={styles.foodColumnGrams}>Grams</div>
+          <div className={styles.foodColumnRemove} />
         </div>
         {list.map((el, index) => (
-          <div className="row" key={index}>
-            <div className="col-md-6">
+          <div className={styles.foodRow} key={index}>
+            <div className={styles.foodColumnName}>
               <input
                 type="text"
                 value={el.name}
@@ -71,7 +72,7 @@ function List({ list, setList, emptyRow }: Props) {
                 onChange={(e) => onChangeData("name", e.target.value, index)}
               />
             </div>
-            <div className="col-md-1">
+            <div className={styles.foodColumnAmount}>
               <input
                 style={{ textAlign: "right" }}
                 type="number"
@@ -85,7 +86,7 @@ function List({ list, setList, emptyRow }: Props) {
                 onChange={(e) => onChangeData("amount", e.target.value, index)}
               />
             </div>
-            <div className="col-md-2">
+            <div className={styles.foodColumnDate}>
               <input
                 style={{ textAlign: "center" }}
                 type="number"
@@ -96,7 +97,7 @@ function List({ list, setList, emptyRow }: Props) {
                 onChange={(e) => onChangeDate(e.target.value, index)}
               />
             </div>
-            <div className="col-md-2">
+            <div className={styles.foodColumnGrams}>
               <input
                 style={{ textAlign: "right" }}
                 type="number"
@@ -106,9 +107,21 @@ function List({ list, setList, emptyRow }: Props) {
                 onChange={(e) => onChangeData("grams", e.target.value, index)}
               />
             </div>
-            <div className="col-md-1">
-              <button className="x" onClick={() => removeRow(index)}>
-                ×
+            <div className={styles.foodColumnRemove}>
+              <button
+                className={styles.removeButton}
+                onClick={() => removeRow(index)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className={styles.removeIcon}
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                </svg>
               </button>
             </div>
           </div>

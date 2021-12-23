@@ -1,0 +1,61 @@
+.foodInput {
+  max-width: 600px;
+  margin: 24px auto;
+  overflow: hidden;
+}
+
+.foodRow {
+  display: flex;
+}
+
+.foodRow:not(:first-child) {
+  border-top: 1px solid #999;
+}
+
+.foodCell {
+  padding: 8px;
+}
+
+.foodCell:not(:first-child) {
+  border-left: 1px solid #999;
+}
+
+.foodColumnName {
+  composes: foodCell;
+  flex: 6;
+}
+
+.foodColumnAmount {
+  composes: foodCell;
+  flex: 1;
+}
+
+.foodColumnDate {
+  composes: foodCell;
+  flex: 2;
+}
+
+.foodColumnGrams {
+  composes: foodCell;
+  flex: 2;
+}
+
+.foodColumnRemove {
+  composes: foodCell;
+  flex: 1;
+}
+
+.foodInput input {
+  margin: 0;
+  width: 100%;
+}
+
+.removeButton {
+  display: block;
+  padding: 0;
+}
+
+.removeIcon {
+  width: auto;
+  height: 36px;
+}
