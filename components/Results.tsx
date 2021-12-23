@@ -1,6 +1,5 @@
 import * as R from "ramda";
 import moment from "moment";
-import "./App.css";
 
 function Results({ list, setList, perDay }) {
     const omitEmpty = list.filter(({ grams }) => grams);
@@ -27,7 +26,8 @@ function Results({ list, setList, perDay }) {
     );
 }
 
-export default Results;
+export default Results
+
 
 function renderPlan(plan) {
     return R.toPairs(plan).map(([day, food], index) => (
@@ -107,7 +107,6 @@ function calculateResults(list, perDay) {
         }
 
         activeDayUsed += foodItem.grams;
-        console.log(foodItem);
         foodItem.usedGrams =
             activeDayUsed >= perDay
                 ? foodItem.grams - (activeDayUsed - perDay)
@@ -136,7 +135,6 @@ function calculateResults(list, perDay) {
         }
     }
 
-    console.log(plan);
 
     const byDate = R.groupBy(({ day }) => day);
     const datePlan = byDate(plan);

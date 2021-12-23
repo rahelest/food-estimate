@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import "./App.css";
+import {useEffect} from "react";
 
-function List({ list, setList, emptyRow }) {
+function List  ({ list, setList, emptyRow }) {
     function onChangeData(field, value, index) {
         const copy = [...list];
         copy[index][field] = value;
@@ -43,23 +42,23 @@ function List({ list, setList, emptyRow }) {
     });
 
     return (
-        <p>
+        <div>
             <div className="food-input">
                 <div className="row">
-                    <div class="col-md-6">Name</div>
-                    <div class="col-md-1">#</div>
-                    <div class="col-md-2">
+                    <div className="col-md-6">Name</div>
+                    <div className="col-md-1">#</div>
+                    <div className="col-md-2">
                         Date
                         <span title="Enter DDMM and see how dive dot appears automatically!">
                             *
                         </span>
                     </div>
-                    <div class="col-md-2">Grams</div>
-                    <div class="col-md-1"></div>
+                    <div className="col-md-2">Grams</div>
+                    <div className="col-md-1"/>
                 </div>
                 {list.map((el, index) => (
                     <div className="row" key={index}>
-                        <div class="col-md-6">
+                        <div className="col-md-6">
                             <input
                                 type="text"
                                 value={el.name}
@@ -69,7 +68,7 @@ function List({ list, setList, emptyRow }) {
                                 }
                             />
                         </div>
-                        <div class="col-md-1">
+                        <div className="col-md-1">
                             <input
                                 style={{ textAlign: "right" }}
                                 type="number"
@@ -86,7 +85,7 @@ function List({ list, setList, emptyRow }) {
                                 }
                             />
                         </div>
-                        <div class="col-md-2">
+                        <div className="col-md-2">
                             <input
                                 style={{ textAlign: "center" }}
                                 type="number"
@@ -99,7 +98,7 @@ function List({ list, setList, emptyRow }) {
                                 }
                             />
                         </div>
-                        <div class="col-md-2">
+                        <div className="col-md-2">
                             <input
                                 style={{ textAlign: "right" }}
                                 type="number"
@@ -111,8 +110,8 @@ function List({ list, setList, emptyRow }) {
                                 }
                             />
                         </div>
-                        <div class="col-md-1">
-                            <button class="x" onClick={() => removeRow(index)}>
+                        <div className="col-md-1">
+                            <button className="x" onClick={() => removeRow(index)}>
                                 ×
                             </button>
                         </div>
@@ -124,8 +123,8 @@ function List({ list, setList, emptyRow }) {
                 <button onClick={addRow}>Add row</button>{" "}
                 <button onClick={clear}>Clear list</button>
             </p>
-        </p>
+        </div>
     );
 }
 
-export default List;
+export default List

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import {useState} from "react";
 import List from "./List";
 import Results from "./Results";
-import "./App.css";
 
-function App() {
+function Estimator () {
     let loadFromStorage, err;
 
     try {
@@ -49,6 +48,8 @@ function App() {
     }
 }
 
+export default Estimator
+
 function load(field) {
     try {
         const storage = localStorage.getItem(field);
@@ -58,5 +59,3 @@ function load(field) {
         return undefined;
     }
 }
-
-export default App;
