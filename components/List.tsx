@@ -1,6 +1,9 @@
 import {useEffect} from "react";
+import {useLocalStorage} from "../composables/useLocalStorage";
 
 function List  ({ list, setList, emptyRow }) {
+    const {load, save} = useLocalStorage()
+
     function onChangeData(field, value, index) {
         const copy = [...list];
         copy[index][field] = value;
@@ -34,12 +37,8 @@ function List  ({ list, setList, emptyRow }) {
     }
 
     useEffect(() => {
-        try {
-            localStorage.setItem("list", JSON.stringify(list));
-        } catch (err) {
-            //shrug
-        }
-    });
+        save("list", list);
+    }, [list]);
 
     return (
         <div>

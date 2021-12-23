@@ -1,18 +1,19 @@
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import List from "./List";
 import Results from "./Results";
+import {useLocalStorage} from "../composables/useLocalStorage";
 
-function Estimator () {
-    let loadFromStorage, err;
+function Estimator() {
+    let err;
+    const {load, save} = useLocalStorage()
+    const savedPerDay = useMemo(() => {
+        const saved = load("perDay")
+        return parseInt(saved, 10);
+    }, [])
 
-    try {
-        loadFromStorage = parseInt(load("perDay"), 10);
-    } catch (error) {
-        err = error;
-    }
-    const emptyRow = { name: "", date: "", grams: "", amount: 1 };
-    const [list, setList] = useState(load("list") || [{ ...emptyRow }]);
-    const [perDay, setPerDay] = useState(loadFromStorage || 1000);
+    const emptyRow = {name: "", date: "", grams: "", amount: 1};
+    const [list, setList] = useState(load("list") || [{...emptyRow}]);
+    const [perDay, setPerDay] = useState(savedPerDay || 1000);
 
     if (err) {
         return <>Problem: {JSON.stringify(err)}</>;
@@ -22,12 +23,9 @@ function Estimator () {
         function onChangePerDay(e) {
             const value = e.target.value;
             setPerDay(value);
-            try {
-                localStorage.setItem("perDay", JSON.stringify(value));
-            } catch (err) {
-                //shrug
-            }
+            save("perDay", value)
         }
+
         return (
             <div className="App">
                 <h2>Food estimator!</h2>
@@ -35,11 +33,11 @@ function Estimator () {
                 <input
                     value={perDay}
                     onChange={onChangePerDay}
-                    style={{ width: "60px", textAlign: "center" }}
+                    style={{width: "60px", textAlign: "center"}}
                 />{" "}
                 grams
-                <List list={list} setList={setList} emptyRow={emptyRow} />
-                <Results list={list} setList={setList} perDay={perDay} />
+                <List list={list} setList={setList} emptyRow={emptyRow}/>
+                <Results list={list} setList={setList} perDay={perDay}/>
             </div>
         );
     } catch (error) {
@@ -49,13 +47,3 @@ function Estimator () {
 }
 
 export default Estimator
-
-function load(field) {
-    try {
-        const storage = localStorage.getItem(field);
-        const parsed = JSON.parse(storage);
-        return parsed;
-    } catch (err) {
-        return undefined;
-    }
-}
