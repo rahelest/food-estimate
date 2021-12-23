@@ -1,5 +1,5 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from "next";
+import Head from "next/head";
 import Estimator from "../components/Estimator";
 
 const Home: NextPage = () => {
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <Estimator />
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
