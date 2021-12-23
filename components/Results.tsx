@@ -1,7 +1,13 @@
 import * as R from "ramda"
 import moment from "moment"
+import { FoodRow } from "../models"
 
-function Results({ list, setList, perDay }) {
+type Props = {
+  list: FoodRow[]
+  perDay: number
+}
+
+function Results({ list, perDay }: Props) {
   const omitEmpty = list.filter(({ grams }) => grams)
   const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay)
   return (

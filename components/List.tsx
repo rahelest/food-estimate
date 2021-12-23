@@ -1,7 +1,14 @@
 import { useEffect } from "react"
 import { useLocalStorage } from "../composables/useLocalStorage"
+import { FoodRow } from "../models"
 
-function List({ list, setList, emptyRow }) {
+type Props = {
+  list: FoodRow[]
+  setList: (list: FoodRow[]) => void
+  emptyRow: FoodRow
+}
+
+function List({ list, setList, emptyRow }: Props) {
   const { load, save } = useLocalStorage()
 
   function onChangeData(field, value, index) {

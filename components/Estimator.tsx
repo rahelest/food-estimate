@@ -2,6 +2,7 @@ import { ChangeEventHandler, useMemo, useState } from "react"
 import List from "./List"
 import Results from "./Results"
 import { useLocalStorage } from "../composables/useLocalStorage"
+import { FoodRow } from "../models"
 
 function Estimator() {
   const { load, save } = useLocalStorage()
@@ -10,8 +11,8 @@ function Estimator() {
     return parseInt(saved, 10)
   }, [load])
 
-  const emptyRow = { name: "", date: "", grams: "", amount: 1 }
-  const [list, setList] = useState(load("list") || [{ ...emptyRow }])
+  const emptyRow: FoodRow = { name: "", date: "", grams: "", amount: 1 }
+  const [list, setList] = useState<FoodRow[]>(load("list") || [{ ...emptyRow }])
   const [perDay, setPerDay] = useState<number>(savedPerDay || 1000)
 
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -32,7 +33,7 @@ function Estimator() {
       />{" "}
       grams
       <List list={list} setList={setList} emptyRow={emptyRow} />
-      <Results list={list} setList={setList} perDay={perDay} />
+      <Results list={list} perDay={perDay} />
     </div>
   )
 }
