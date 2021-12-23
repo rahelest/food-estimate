@@ -1,6 +1,7 @@
 import * as R from "ramda"
 import moment from "moment"
-import { FoodRow } from "../models"
+import { FoodRow, HelperFoodRow, Plan, PlanRow } from "../models"
+import { useMemo } from "react"
 
 type Props = {
   list: FoodRow[]
@@ -8,12 +9,27 @@ type Props = {
 }
 
 function Results({ list, perDay }: Props) {
-  const omitEmpty = list.filter(({ grams }) => grams)
-  const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay)
+  const omitEmpty = useMemo(() => list.filter(({ grams }) => grams), [list])
+  const { date, expirations, datePlan } = useMemo(
+    () => calculateResults(omitEmpty, perDay),
+    [omitEmpty, perDay]
+  )
+
   return (
     <div className="results">
       Food: {omitEmpty.length} item(s) - Lasts until: {date} <p />
-      {date && renderExpirations(expirations)}
+      {date && expirations?.length ? (
+        <div style={{ float: "left", marginRight: "40px" }}>
+          <h3>Food that will expire:</h3> <p />
+          <ul>
+            {expirations.map(({ name, date, grams }, index) => (
+              <li key={index}>
+                {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       {date && (
         <div style={{ float: "left" }}>
           <h3>Plan:</h3> <p />
@@ -24,7 +40,23 @@ function Results({ list, perDay }: Props) {
               display: "inline-block",
             }}
           >
-            {renderPlan(datePlan)}
+            {R.toPairs(datePlan).map(([day, foodList], index) => (
+              <li key={index}>
+                <div style={{ color: "#666" }}>{day}: </div>
+                <ul>
+                  {foodList.map((planRow: PlanRow, ind2: number) => {
+                    const { name, date, grams, usedGrams, nr } =
+                      planRow.foodItem
+                    return (
+                      <li key={ind2}>
+                        {name} #{nr} ({usedGrams} / {grams}g),{" "}
+                        {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </li>
+            ))}
           </ul>
         </div>
       )}
@@ -34,63 +66,32 @@ function Results({ list, perDay }: Props) {
 
 export default Results
 
-function renderPlan(plan) {
-  return R.toPairs(plan).map(([day, food], index) => (
-    <li key={index}>
-      <div style={{ color: "#666" }}>{day}: </div>
-      <ul>
-        {food.map(
-          (
-            { foodItem: { name, date, grams, usedGrams, amount, nr } },
-            ind2
-          ) => (
-            <li key={ind2}>
-              {name} #{nr} ({usedGrams} / {grams}g),{" "}
-              {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
-            </li>
-          )
-        )}
-      </ul>
-    </li>
-  ))
-}
-
-function renderExpirations(expirations) {
-  if (!expirations.length) return false
-
-  const expirationList = expirations.map(({ name, date, grams }, ind2) => (
-    <li key={ind2}>
-      {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
-    </li>
-  ))
-
-  return (
-    <div style={{ float: "left", marginRight: "40px" }}>
-      <h3>Food that will expire:</h3> <p />
-      <ul>{expirationList}</ul>
-    </div>
-  )
-}
-
-function isExpired(foodItem, activeDay) {
+function isExpired(foodItem: HelperFoodRow, activeDay: moment.Moment) {
   return foodItem.dateMoment.isBefore(activeDay, "day")
   // || foodItem.dateMoment.isSame(activeDay, "day")
 }
 
-function calculateResults(list, perDay) {
-  if (perDay < 400 || perDay > 4000) return {}
-  const expirations = []
-  const plan = []
+function calculateResults(
+  list: FoodRow[],
+  perDay: number
+): {
+  date: string
+  expirations: HelperFoodRow[]
+  datePlan: Plan
+} {
+  const expirations: HelperFoodRow[] = []
+  const plan: PlanRow[] = []
   const sortableDate = list.map((obj) => ({
     ...obj,
     dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
     dateMoment: moment(obj.date, "DDMM"),
-    grams: parseInt(obj.grams, 10),
   }))
-  const duplicateByAmount = sortableDate.flatMap((food) => {
+  const duplicateByAmount: HelperFoodRow[] = sortableDate.flatMap((food) => {
     return R.times((i) => ({ ...food, nr: i + 1 }), food.amount)
   })
-  const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay)
+  const dateAsc = R.comparator((a: HelperFoodRow, b: HelperFoodRow) => {
+    return a.dateMonthDay < b.dateMonthDay
+  })
   const sorted = R.sort(dateAsc, duplicateByAmount)
 
   let activeDay = moment().add(1, "day")
@@ -111,6 +112,7 @@ function calculateResults(list, perDay) {
       day: activeDay.format("ddd, DD.MM"),
       foodItem: { ...foodItem },
     })
+
     while (activeDayUsed >= perDay) {
       // next day, carry over
       activeDay = moment(activeDay).add(1, "day")
@@ -131,8 +133,8 @@ function calculateResults(list, perDay) {
     }
   }
 
-  const byDate = R.groupBy(({ day }) => day)
-  const datePlan = byDate(plan)
+  const byDate = R.groupBy(({ day }: PlanRow) => day)
+  const datePlan: Plan = byDate(plan)
 
   return { date: activeDay.format("ddd, DD.MM"), expirations, datePlan }
 }

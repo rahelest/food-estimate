@@ -11,14 +11,21 @@ function Estimator() {
     return parseInt(saved, 10)
   }, [load])
 
-  const emptyRow: FoodRow = { name: "", date: "", grams: "", amount: 1 }
+  const emptyRow: FoodRow = { name: "", date: "", grams: 0, amount: 1 }
   const [list, setList] = useState<FoodRow[]>(load("list") || [{ ...emptyRow }])
   const [perDay, setPerDay] = useState<number>(savedPerDay || 1000)
 
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
     const value = e.target.value
-    setPerDay(parseInt(value, 10))
-    save("perDay", value)
+    const asNumber = parseInt(value, 10)
+
+    // Ignore too large and too small
+    if (asNumber < 400 || asNumber > 4000) {
+      return
+    }
+
+    setPerDay(asNumber)
+    save("perDay", asNumber)
   }
 
   return (

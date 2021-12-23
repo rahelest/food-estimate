@@ -9,11 +9,11 @@ type Props = {
 }
 
 function List({ list, setList, emptyRow }: Props) {
-  const { load, save } = useLocalStorage()
+  const { save } = useLocalStorage()
 
-  function onChangeData(field, value, index) {
+  function onChangeData(field: string, value: string, index: number) {
     const copy = [...list]
-    copy[index][field] = value
+    copy[index] = { ...copy[index], [field]: value }
     setList(copy)
 
     if (index + 1 === copy.length && copy[index].grams) {
@@ -21,9 +21,8 @@ function List({ list, setList, emptyRow }: Props) {
     }
   }
 
-  function onChangeDate(value, index) {
-    let newValue = value.replace(/(\d)(\d\d)/, "$1.$2")
-    newValue = value.replace(/(\d)\.?(\d)(\d\d)/, "$1$2.$3")
+  function onChangeDate(value: string, index: number) {
+    const newValue = value.replace(/(\d)\.?(\d)(\d\d)/, "$1$2.$3")
     onChangeData("date", newValue, index)
   }
 
@@ -33,7 +32,7 @@ function List({ list, setList, emptyRow }: Props) {
     setList(copy)
   }
 
-  function removeRow(index) {
+  function removeRow(index: number) {
     const copy = [...list]
     copy.splice(index, 1)
     setList(copy)
@@ -79,7 +78,10 @@ function List({ list, setList, emptyRow }: Props) {
                 min="1"
                 value={el.amount}
                 placeholder="Amount"
-                onClick={(e) => e.target.select(9)}
+                onClick={(e) => {
+                  const target = e.target as HTMLInputElement
+                  return target.select()
+                }}
                 onChange={(e) => onChangeData("amount", e.target.value, index)}
               />
             </div>
