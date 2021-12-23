@@ -1,9 +1,9 @@
-import * as R from "ramda";
-import moment from "moment";
+import * as R from "ramda"
+import moment from "moment"
 
 function Results({ list, setList, perDay }) {
-  const omitEmpty = list.filter(({ grams }) => grams);
-  const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay);
+  const omitEmpty = list.filter(({ grams }) => grams)
+  const { date, expirations, datePlan } = calculateResults(omitEmpty, perDay)
   return (
     <div className="results">
       Food: {omitEmpty.length} item(s) - Lasts until: {date} <p />
@@ -23,10 +23,10 @@ function Results({ list, setList, perDay }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default Results;
+export default Results
 
 function renderPlan(plan) {
   return R.toPairs(plan).map(([day, food], index) => (
@@ -46,89 +46,89 @@ function renderPlan(plan) {
         )}
       </ul>
     </li>
-  ));
+  ))
 }
 
 function renderExpirations(expirations) {
-  if (!expirations.length) return false;
+  if (!expirations.length) return false
 
   const expirationList = expirations.map(({ name, date, grams }, ind2) => (
     <li key={ind2}>
       {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
     </li>
-  ));
+  ))
 
   return (
     <div style={{ float: "left", marginRight: "40px" }}>
       <h3>Food that will expire:</h3> <p />
       <ul>{expirationList}</ul>
     </div>
-  );
+  )
 }
 
 function isExpired(foodItem, activeDay) {
-  return foodItem.dateMoment.isBefore(activeDay, "day");
+  return foodItem.dateMoment.isBefore(activeDay, "day")
   // || foodItem.dateMoment.isSame(activeDay, "day")
 }
 
 function calculateResults(list, perDay) {
-  if (perDay < 400 || perDay > 4000) return {};
-  const expirations = [];
-  const plan = [];
+  if (perDay < 400 || perDay > 4000) return {}
+  const expirations = []
+  const plan = []
   const sortableDate = list.map((obj) => ({
     ...obj,
     dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
     dateMoment: moment(obj.date, "DDMM"),
     grams: parseInt(obj.grams, 10),
-  }));
+  }))
   const duplicateByAmount = sortableDate.flatMap((food) => {
-    return R.times((i) => ({ ...food, nr: i + 1 }), food.amount);
-  });
-  const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay);
-  const sorted = R.sort(dateAsc, duplicateByAmount);
+    return R.times((i) => ({ ...food, nr: i + 1 }), food.amount)
+  })
+  const dateAsc = R.comparator((a, b) => a.dateMonthDay < b.dateMonthDay)
+  const sorted = R.sort(dateAsc, duplicateByAmount)
 
-  let activeDay = moment().add(1, "day");
-  let activeDayUsed = 0;
+  let activeDay = moment().add(1, "day")
+  let activeDayUsed = 0
 
   for (const foodItem of sorted) {
     if (isExpired(foodItem, activeDay)) {
-      expirations.push(foodItem);
-      continue;
+      expirations.push(foodItem)
+      continue
     }
 
-    activeDayUsed += foodItem.grams;
+    activeDayUsed += foodItem.grams
     foodItem.usedGrams =
       activeDayUsed >= perDay
         ? foodItem.grams - (activeDayUsed - perDay)
-        : foodItem.grams;
+        : foodItem.grams
     plan.push({
       day: activeDay.format("ddd, DD.MM"),
       foodItem: { ...foodItem },
-    });
+    })
     while (activeDayUsed >= perDay) {
       // next day, carry over
-      activeDay = moment(activeDay).add(1, "day");
-      activeDayUsed = activeDayUsed - perDay;
+      activeDay = moment(activeDay).add(1, "day")
+      activeDayUsed = activeDayUsed - perDay
 
       if (activeDayUsed > 0) {
-        foodItem.usedGrams = foodItem.grams - foodItem.usedGrams;
+        foodItem.usedGrams = foodItem.grams - foodItem.usedGrams
 
         plan.push({
           day: activeDay.format("ddd, DD.MM"),
           foodItem: { ...foodItem },
-        });
+        })
 
         if (isExpired(foodItem, activeDay)) {
-          expirations.push(foodItem);
+          expirations.push(foodItem)
         }
       }
     }
   }
 
-  const byDate = R.groupBy(({ day }) => day);
-  const datePlan = byDate(plan);
+  const byDate = R.groupBy(({ day }) => day)
+  const datePlan = byDate(plan)
 
-  return { date: activeDay.format("ddd, DD.MM"), expirations, datePlan };
+  return { date: activeDay.format("ddd, DD.MM"), expirations, datePlan }
 }
 
 /*

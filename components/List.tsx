@@ -1,44 +1,44 @@
-import { useEffect } from "react";
-import { useLocalStorage } from "../composables/useLocalStorage";
+import { useEffect } from "react"
+import { useLocalStorage } from "../composables/useLocalStorage"
 
 function List({ list, setList, emptyRow }) {
-  const { load, save } = useLocalStorage();
+  const { load, save } = useLocalStorage()
 
   function onChangeData(field, value, index) {
-    const copy = [...list];
-    copy[index][field] = value;
-    setList(copy);
+    const copy = [...list]
+    copy[index][field] = value
+    setList(copy)
 
     if (index + 1 === copy.length && copy[index].grams) {
-      addRow();
+      addRow()
     }
   }
 
   function onChangeDate(value, index) {
-    let newValue = value.replace(/(\d)(\d\d)/, "$1.$2");
-    newValue = value.replace(/(\d)\.?(\d)(\d\d)/, "$1$2.$3");
-    onChangeData("date", newValue, index);
+    let newValue = value.replace(/(\d)(\d\d)/, "$1.$2")
+    newValue = value.replace(/(\d)\.?(\d)(\d\d)/, "$1$2.$3")
+    onChangeData("date", newValue, index)
   }
 
   function addRow() {
-    const copy = [...list];
-    copy.push({ ...emptyRow });
-    setList(copy);
+    const copy = [...list]
+    copy.push({ ...emptyRow })
+    setList(copy)
   }
 
   function removeRow(index) {
-    const copy = [...list];
-    copy.splice(index, 1);
-    setList(copy);
+    const copy = [...list]
+    copy.splice(index, 1)
+    setList(copy)
   }
 
   function clear() {
-    setList([{ ...emptyRow }]);
+    setList([{ ...emptyRow }])
   }
 
   useEffect(() => {
-    save("list", list);
-  }, [list]);
+    save("list", list)
+  }, [list])
 
   return (
     <div>
@@ -111,7 +111,7 @@ function List({ list, setList, emptyRow }) {
         <button onClick={clear}>Clear list</button>
       </p>
     </div>
-  );
+  )
 }
 
-export default List;
+export default List

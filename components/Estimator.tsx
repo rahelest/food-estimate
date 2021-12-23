@@ -1,24 +1,24 @@
-import { ChangeEventHandler, useMemo, useState } from "react";
-import List from "./List";
-import Results from "./Results";
-import { useLocalStorage } from "../composables/useLocalStorage";
+import { ChangeEventHandler, useMemo, useState } from "react"
+import List from "./List"
+import Results from "./Results"
+import { useLocalStorage } from "../composables/useLocalStorage"
 
 function Estimator() {
-  const { load, save } = useLocalStorage();
+  const { load, save } = useLocalStorage()
   const savedPerDay = useMemo(() => {
-    const saved = load("perDay");
-    return parseInt(saved, 10);
-  }, [load]);
+    const saved = load("perDay")
+    return parseInt(saved, 10)
+  }, [load])
 
-  const emptyRow = { name: "", date: "", grams: "", amount: 1 };
-  const [list, setList] = useState(load("list") || [{ ...emptyRow }]);
-  const [perDay, setPerDay] = useState<number>(savedPerDay || 1000);
+  const emptyRow = { name: "", date: "", grams: "", amount: 1 }
+  const [list, setList] = useState(load("list") || [{ ...emptyRow }])
+  const [perDay, setPerDay] = useState<number>(savedPerDay || 1000)
 
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const value = e.target.value;
-    setPerDay(parseInt(value, 10));
-    save("perDay", value);
-  };
+    const value = e.target.value
+    setPerDay(parseInt(value, 10))
+    save("perDay", value)
+  }
 
   return (
     <div className="App">
@@ -34,7 +34,7 @@ function Estimator() {
       <List list={list} setList={setList} emptyRow={emptyRow} />
       <Results list={list} setList={setList} perDay={perDay} />
     </div>
-  );
+  )
 }
 
-export default Estimator;
+export default Estimator

@@ -4,7 +4,7 @@ The aim of this project is to provide an easy way to know if I have bought enoug
 It takes into account the daily grams and calculates for how long the food should last.
 It warns if something will expire. For example, if I eat 1kg per day and buy 3kg of meat with tomorrow as the expiration date, it will let me know.
 
-----
+---
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
