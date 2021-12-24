@@ -12,7 +12,7 @@ const Home: NextPage = () => {
         <link rel="manifest" href="/manifest.json" />
       </Head>
 
-      <main>
+      <main className="container">
         <Estimator />
       </main>
     </div>

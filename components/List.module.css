@@ -1,5 +1,4 @@
 .foodInput {
-  max-width: 600px;
   margin: 24px auto;
   overflow: hidden;
 }
@@ -57,5 +56,5 @@
 
 .removeIcon {
   width: auto;
-  height: 36px;
+  height: 27px;
 }

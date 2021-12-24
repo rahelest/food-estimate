@@ -11,13 +11,10 @@ code {
     monospace;
 }
 
-body {
-  font-size: 20px;
-}
-
 input {
   border: 1px solid #999;
   border-radius: 4px;
+  line-height: 1;
   padding: 4px 8px;
 }
 
@@ -26,11 +23,7 @@ input[type="number"] {
 }
 
 button {
-  padding: 4px 12px;
-}
-
-.App {
-  text-align: center;
+  padding: 8px 12px;
 }
 
 .results {
@@ -39,18 +32,14 @@ button {
   display: inline-block;
 }
 
+.container {
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
 @media (min-width: 768px) {
   .container {
+    padding: 32px;
     width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
   }
 }
