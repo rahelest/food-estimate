@@ -3,6 +3,7 @@ import List from "./List"
 import Results from "./Results"
 import { useLocalStorage } from "../composables/useLocalStorage"
 import { FoodRow } from "../models"
+import styles from "./Estimator.module.css"
 
 function Estimator() {
   const { load, save } = useLocalStorage()
@@ -29,19 +30,19 @@ function Estimator() {
   }
 
   return (
-    <div className="App">
-      <h2>Food estimator!</h2>
+    <>
+      <h2 className={styles.title}>Food estimator!</h2>
       Food consumed per day:{" "}
       <input
         value={perDay}
         type="number"
         onChange={onChangePerDay}
-        style={{ width: "60px", textAlign: "center" }}
-      />{" "}
+        className={styles.perDayInput}
+      />
       grams
       <List list={list} setList={setList} emptyRow={emptyRow} />
       <Results list={list} perDay={perDay} />
-    </div>
+    </>
   )
 }
 

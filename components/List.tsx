@@ -78,7 +78,7 @@ function List({ list, setList, emptyRow }: Props) {
                 type="number"
                 min="1"
                 value={el.amount}
-                placeholder="Amount"
+                placeholder="#"
                 onClick={(e) => {
                   const target = e.target as HTMLInputElement
                   return target.select()
