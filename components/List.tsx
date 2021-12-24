@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useLocalStorage } from "../composables/useLocalStorage"
 import { FoodRow } from "../models"
 import styles from "./List.module.css"
+import Field from "./Field"
 
 type Props = {
   list: FoodRow[]
@@ -50,62 +51,71 @@ function List({ list, setList, emptyRow }: Props) {
   return (
     <div>
       <div className={styles.foodInput}>
-        <div className={styles.foodRow}>
-          <div className={styles.foodColumnName}>Name</div>
-          <div className={styles.foodColumnAmount}>#</div>
-          <div className={styles.foodColumnDate}>
-            Date
-            <span title="Enter DDMM and see how dive dot appears automatically!">
-              *
-            </span>
-          </div>
-          <div className={styles.foodColumnGrams}>Grams</div>
-          <div className={styles.foodColumnRemove} />
-        </div>
         {list.map((el, index) => (
           <div className={styles.foodRow} key={index}>
             <div className={styles.foodColumnName}>
-              <input
-                type="text"
-                value={el.name}
-                placeholder="Name"
-                onChange={(e) => onChangeData("name", e.target.value, index)}
-              />
+              <Field label="Name">
+                <input
+                  type="text"
+                  value={el.name}
+                  onChange={(e) => onChangeData("name", e.target.value, index)}
+                />
+              </Field>
             </div>
-            <div className={styles.foodColumnAmount}>
-              <input
-                style={{ textAlign: "right" }}
-                type="number"
-                min="1"
-                value={el.amount}
-                placeholder="#"
-                onClick={(e) => {
-                  const target = e.target as HTMLInputElement
-                  return target.select()
-                }}
-                onChange={(e) => onChangeData("amount", e.target.value, index)}
-              />
+            <div
+              className={styles.foodColumnAmount}
+              style={{ textAlign: "right" }}
+            >
+              <Field label="#">
+                <input
+                  style={{ textAlign: "right" }}
+                  type="number"
+                  min="1"
+                  value={el.amount}
+                  onClick={(e) => {
+                    const target = e.target as HTMLInputElement
+                    return target.select()
+                  }}
+                  onChange={(e) =>
+                    onChangeData("amount", e.target.value, index)
+                  }
+                />
+              </Field>
             </div>
-            <div className={styles.foodColumnDate}>
-              <input
-                style={{ textAlign: "center" }}
-                type="number"
-                step="0.01"
-                lang="en"
-                value={el.date}
-                placeholder="Date"
-                onChange={(e) => onChangeDate(e.target.value, index)}
-              />
+            <div
+              className={styles.foodColumnDate}
+              style={{ textAlign: "center" }}
+            >
+              <Field
+                label={
+                  <span title="Enter DDMM and see how dive dot appears automatically!">
+                    Date *
+                  </span>
+                }
+              >
+                <input
+                  style={{ textAlign: "center" }}
+                  type="number"
+                  step="0.01"
+                  lang="en"
+                  value={el.date}
+                  onChange={(e) => onChangeDate(e.target.value, index)}
+                />
+              </Field>
             </div>
-            <div className={styles.foodColumnGrams}>
-              <input
-                style={{ textAlign: "right" }}
-                type="number"
-                min="0"
-                value={el.grams}
-                placeholder="Grams"
-                onChange={(e) => onChangeData("grams", e.target.value, index)}
-              />
+            <div
+              className={styles.foodColumnGrams}
+              style={{ textAlign: "right" }}
+            >
+              <Field label="Grams">
+                <input
+                  style={{ textAlign: "right" }}
+                  type="number"
+                  min="0"
+                  value={el.grams}
+                  onChange={(e) => onChangeData("grams", e.target.value, index)}
+                />
+              </Field>
             </div>
             <div className={styles.foodColumnRemove}>
               <button
@@ -128,9 +138,13 @@ function List({ list, setList, emptyRow }: Props) {
         ))}
       </div>
 
-      <p>
-        <button onClick={addRow}>Add row</button>{" "}
-        <button onClick={clear}>Clear list</button>
+      <p style={{ textAlign: "center" }}>
+        <button onClick={addRow} className={styles.primaryButton}>
+          Add row
+        </button>{" "}
+        <button onClick={clear} className={styles.secondaryButton}>
+          Clear list
+        </button>
       </p>
     </div>
   )

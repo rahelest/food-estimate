@@ -5,43 +5,36 @@
 
 .foodRow {
   display: flex;
-}
-
-.foodRow:not(:first-child) {
-  border-top: 1px solid #999;
-}
-
-.foodCell {
-  padding: 8px;
-}
-
-.foodCell:not(:first-child) {
-  border-left: 1px solid #999;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  padding: 16px 0;
+  gap: 4px 16px;
 }
 
 .foodColumnName {
-  composes: foodCell;
   flex: 6;
 }
 
+@media screen and (max-width: 678px) {
+  .foodColumnName {
+    min-width: 100%;
+  }
+}
+
 .foodColumnAmount {
-  composes: foodCell;
   flex: 1;
 }
 
 .foodColumnDate {
-  composes: foodCell;
   flex: 2;
 }
 
 .foodColumnGrams {
-  composes: foodCell;
   flex: 2;
 }
 
 .foodColumnRemove {
-  composes: foodCell;
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 .foodInput input {
@@ -57,4 +50,19 @@
 .removeIcon {
   width: auto;
   height: 27px;
+}
+
+.button {
+  border: 1px solid #000;
+  border-radius: 8px;
+  letter-spacing: 1px;
+}
+
+.primaryButton {
+  composes: button;
+}
+
+.secondaryButton {
+  composes: button;
+  background-color: white;
 }
