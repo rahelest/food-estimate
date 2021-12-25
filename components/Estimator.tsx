@@ -4,17 +4,15 @@ import Results from "./Results"
 import { useLocalStorage } from "../composables/useLocalStorage"
 import { FoodRow } from "../models"
 import styles from "./Estimator.module.css"
+import { useSavedPerDay } from "../composables/useSavedData"
 
 function Estimator() {
-  const { load, save } = useLocalStorage()
-  const savedPerDay = useMemo(() => {
-    const saved = load("perDay")
-    return parseInt(saved, 10)
-  }, [load])
+  const { load } = useLocalStorage()
+  const { load: loadSavedPerDay, save: savePerDay } = useSavedPerDay()
 
   const emptyRow: FoodRow = { name: "", date: "", grams: 0, amount: 1 }
   const [list, setList] = useState<FoodRow[]>(load("list") || [{ ...emptyRow }])
-  const [perDay, setPerDay] = useState<number>(savedPerDay || 1000)
+  const [perDay, setPerDay] = useState<number>(loadSavedPerDay)
 
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
     const value = e.target.value
@@ -26,7 +24,7 @@ function Estimator() {
     }
 
     setPerDay(asNumber)
-    save("perDay", asNumber)
+    savePerDay(asNumber)
   }
 
   return (
