@@ -1,9 +1,12 @@
-import { ChangeEventHandler, useState } from "react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import List from "./List"
 import Results from "./Results"
 import { FoodRow } from "../models"
 import styles from "./Estimator.module.css"
 import { useSavedList, useSavedPerDay } from "../composables/useSavedData"
+
+const MIN_VALUE = 400
+const MAX_VALUE = 10000
 
 function Estimator() {
   const { load: loadSavedList } = useSavedList()
@@ -14,16 +17,12 @@ function Estimator() {
 
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
     const value = e.target.value
-    const asNumber = parseInt(value, 10)
-
-    // Ignore too large and too small
-    if (asNumber < 400 || asNumber > 4000) {
-      return
-    }
-
-    setPerDay(asNumber)
-    savePerDay(asNumber)
+    setPerDay(parseInt(value, 10))
   }
+
+  useEffect(() => {
+    savePerDay(perDay)
+  }, [perDay, savePerDay])
 
   return (
     <>
@@ -33,13 +32,31 @@ function Estimator() {
         value={perDay}
         type="number"
         onChange={onChangePerDay}
-        className={styles.perDayInput}
+        className={classNames(
+          styles.perDayInput,
+          outOfBounds(perDay) && styles.inputError
+        )}
       />
       grams
+      {outOfBounds(perDay) ? (
+        <label className={styles.error}>
+          Per day value should be between {MIN_VALUE} and {MAX_VALUE}
+        </label>
+      ) : null}
       <List list={list} setList={setList} />
-      <Results list={list} perDay={perDay} />
+      {outOfBounds(perDay) ? null : <Results list={list} perDay={perDay} />}
     </>
   )
 }
 
 export default Estimator
+
+function outOfBounds(perDay: number) {
+  return perDay < MIN_VALUE || perDay > MAX_VALUE
+}
+
+function classNames(
+  ...styles: (string | false | undefined)[]
+): string | undefined {
+  return styles.filter((s) => s).join(" ")
+}

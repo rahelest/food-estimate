@@ -12,3 +12,13 @@
   text-align: center;
   width: 70px;
 }
+
+.error {
+  color: red;
+  display: block;
+  margin: 8px 0;
+}
+
+.inputError {
+  border: 1px solid red;
+}
