@@ -1,17 +1,16 @@
 import { useEffect } from "react"
-import { useLocalStorage } from "../composables/useLocalStorage"
 import { FoodRow } from "../models"
 import styles from "./List.module.css"
 import Field from "./Field"
+import { getEmptyRow, useSavedList } from "../composables/useSavedData"
 
 type Props = {
   list: FoodRow[]
   setList: (list: FoodRow[]) => void
-  emptyRow: FoodRow
 }
 
-function List({ list, setList, emptyRow }: Props) {
-  const { save } = useLocalStorage()
+function List({ list, setList }: Props) {
+  const { save: saveList } = useSavedList()
 
   function onChangeData(field: string, value: string, index: number) {
     const copy = [...list]
@@ -30,7 +29,7 @@ function List({ list, setList, emptyRow }: Props) {
 
   function addRow() {
     const copy = [...list]
-    copy.push({ ...emptyRow })
+    copy.push(getEmptyRow())
     setList(copy)
   }
 
@@ -41,12 +40,12 @@ function List({ list, setList, emptyRow }: Props) {
   }
 
   function clear() {
-    setList([{ ...emptyRow }])
+    setList([getEmptyRow()])
   }
 
   useEffect(() => {
-    save("list", list)
-  }, [list])
+    saveList(list)
+  }, [list, saveList])
 
   return (
     <div>
