@@ -12,7 +12,7 @@ type Props = {
 function List({ list, setList }: Props) {
   const { save: saveList } = useSavedList()
 
-  function onChangeData(field: string, value: string, index: number) {
+  function onChangeData(field: string, value: string | number, index: number) {
     const copy = [...list]
     copy[index] = { ...copy[index], [field]: value }
     setList(copy)
@@ -20,6 +20,11 @@ function List({ list, setList }: Props) {
     if (index + 1 === copy.length && copy[index].grams) {
       addRow()
     }
+  }
+
+  function onChangeNumber(field: string, value: string, index: number) {
+    const newValue = parseInt(value, 10)
+    onChangeData(field, newValue, index)
   }
 
   function onChangeDate(value: string, index: number) {
@@ -76,7 +81,7 @@ function List({ list, setList }: Props) {
                     return target.select()
                   }}
                   onChange={(e) =>
-                    onChangeData("amount", e.target.value, index)
+                    onChangeNumber("amount", e.target.value, index)
                   }
                 />
               </Field>
@@ -112,7 +117,9 @@ function List({ list, setList }: Props) {
                   type="number"
                   min="0"
                   value={el.grams}
-                  onChange={(e) => onChangeData("grams", e.target.value, index)}
+                  onChange={(e) =>
+                    onChangeNumber("grams", e.target.value, index)
+                  }
                 />
               </Field>
             </div>
