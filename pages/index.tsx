@@ -1,6 +1,7 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Estimator from "../components/Estimator"
+import { ClientOnly } from "../composables/useHasMounted"
 
 const Home: NextPage = () => {
   return (
@@ -13,7 +14,9 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container">
-        <Estimator />
+        <ClientOnly>
+          <Estimator />
+        </ClientOnly>
       </main>
     </div>
   )
