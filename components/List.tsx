@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { FoodRow } from "../models"
 import styles from "./List.module.css"
 import Field from "./Field"
@@ -42,6 +42,8 @@ function List({ list, setList }: Props) {
   function clear() {
     setList([getEmptyRow()])
   }
+
+  const week = useMemo(() => new Date(Date.now() + 1000 * 3600 * 24 * 7), [])
 
   useEffect(() => {
     saveList(list)
@@ -94,7 +96,7 @@ function List({ list, setList }: Props) {
               <Field
                 label={
                   <span title="Enter DDMM and see how dive dot appears automatically!">
-                    Date *
+                    Date (!)
                   </span>
                 }
               >
@@ -104,6 +106,11 @@ function List({ list, setList }: Props) {
                   step="0.01"
                   lang="en"
                   value={row.date}
+                  placeholder={
+                    week.getDate().toString().padStart(2, "0") +
+                    "." +
+                    (week.getMonth() + 1).toString().padStart(2, "0")
+                  }
                   onChange={(e) => onChangeDate(e.target.value, row.id)}
                 />
               </Field>
