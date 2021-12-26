@@ -49,7 +49,7 @@ function Results({ list, perDay }: Props) {
                       planRow.foodItem
                     return (
                       <li key={ind2}>
-                        {name} #{nr} ({usedGrams} / {grams}g),{" "}
+                        {name} ×{nr} ({usedGrams} / {grams}g),{" "}
                         {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
                       </li>
                     )

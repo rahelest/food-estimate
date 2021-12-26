@@ -71,9 +71,9 @@ function List({ list, setList }: Props) {
             </div>
             <div
               className={styles.foodColumnAmount}
-              style={{ textAlign: "right" }}
+              style={{ textAlign: "center" }}
             >
-              <Field label="#">
+              <Field label="×">
                 <input
                   style={{ textAlign: "right" }}
                   type="number"
