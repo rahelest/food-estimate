@@ -21,7 +21,13 @@ export function useSavedList() {
   return {
     load(): FoodRow[] {
       const loadedList = load("list")
-      return loadedList || [getEmptyRow()]
+      const ensuredId = loadedList?.map((item: FoodRow) => {
+        return {
+          ...item,
+          id: item.id || getId(),
+        }
+      })
+      return ensuredId || [getEmptyRow()]
     },
 
     save(value: FoodRow[]) {
@@ -31,5 +37,21 @@ export function useSavedList() {
 }
 
 export function getEmptyRow(): FoodRow {
-  return { name: "", date: "", grams: 0, amount: 1 }
+  return { name: "", date: "", grams: 0, amount: 1, id: getId() }
+}
+
+function* generateId() {
+  let lastUsed = 0
+
+  while (true) {
+    const now = Date.now()
+    lastUsed = now > lastUsed ? now : lastUsed + 1
+    yield lastUsed
+    continue
+  }
+}
+
+const idGenerator = generateId()
+function getId(): number {
+  return idGenerator.next().value || -1
 }

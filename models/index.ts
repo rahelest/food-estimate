@@ -1,6 +1,7 @@
 import moment from "moment"
 
 export interface FoodRow {
+  id: number
   name: string
   date: string
   grams: number

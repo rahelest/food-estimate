@@ -12,14 +12,13 @@ type Props = {
 function List({ list, setList }: Props) {
   const { save: saveList } = useSavedList()
 
-  function onChangeData(field: string, value: string | number, index: number) {
-    const copy = [...list]
-    copy[index] = { ...copy[index], [field]: value }
-    setList(copy)
-
-    if (index + 1 === copy.length && copy[index].grams) {
-      addRow()
-    }
+  function onChangeData(field: string, value: string | number, _id: number) {
+    setList(
+      list.map((item) => {
+        if (item.id !== _id) return item
+        return { ...item, [field]: value }
+      })
+    )
   }
 
   function onChangeNumber(field: string, value: string, index: number) {
@@ -33,15 +32,11 @@ function List({ list, setList }: Props) {
   }
 
   function addRow() {
-    const copy = [...list]
-    copy.push(getEmptyRow())
-    setList(copy)
+    setList(list.concat(getEmptyRow()))
   }
 
-  function removeRow(index: number) {
-    const copy = [...list]
-    copy.splice(index, 1)
-    setList(copy)
+  function removeRow(_id: number) {
+    setList(list.filter(({ id }) => id !== _id))
   }
 
   function clear() {
@@ -52,17 +47,23 @@ function List({ list, setList }: Props) {
     saveList(list)
   }, [list, saveList])
 
+  useEffect(() => {
+    if (list[list.length - 1].grams) {
+      addRow()
+    }
+  }, [list, saveList])
+
   return (
     <div>
       <div className={styles.foodInput}>
-        {list.map((el, index) => (
-          <div className={styles.foodRow} key={index}>
+        {list.map((row) => (
+          <div className={styles.foodRow} key={row.id}>
             <div className={styles.foodColumnName}>
               <Field label="Name">
                 <input
                   type="text"
-                  value={el.name}
-                  onChange={(e) => onChangeData("name", e.target.value, index)}
+                  value={row.name}
+                  onChange={(e) => onChangeData("name", e.target.value, row.id)}
                 />
               </Field>
             </div>
@@ -75,13 +76,13 @@ function List({ list, setList }: Props) {
                   style={{ textAlign: "right" }}
                   type="number"
                   min="1"
-                  value={el.amount}
+                  value={row.amount}
                   onClick={(e) => {
                     const target = e.target as HTMLInputElement
                     return target.select()
                   }}
                   onChange={(e) =>
-                    onChangeNumber("amount", e.target.value, index)
+                    onChangeNumber("amount", e.target.value, row.id)
                   }
                 />
               </Field>
@@ -102,8 +103,8 @@ function List({ list, setList }: Props) {
                   type="number"
                   step="0.01"
                   lang="en"
-                  value={el.date}
-                  onChange={(e) => onChangeDate(e.target.value, index)}
+                  value={row.date}
+                  onChange={(e) => onChangeDate(e.target.value, row.id)}
                 />
               </Field>
             </div>
@@ -116,9 +117,9 @@ function List({ list, setList }: Props) {
                   style={{ textAlign: "right" }}
                   type="number"
                   min="0"
-                  value={el.grams}
+                  value={row.grams}
                   onChange={(e) =>
-                    onChangeNumber("grams", e.target.value, index)
+                    onChangeNumber("grams", e.target.value, row.id)
                   }
                 />
               </Field>
@@ -126,7 +127,7 @@ function List({ list, setList }: Props) {
             <div className={styles.foodColumnRemove}>
               <button
                 className={styles.removeButton}
-                onClick={() => removeRow(index)}
+                onClick={() => removeRow(row.id)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
