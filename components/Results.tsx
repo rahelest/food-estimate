@@ -1,7 +1,12 @@
 import * as R from "ramda"
-import moment from "moment"
 import { FoodRow, HelperFoodRow, Plan, PlanRow } from "../models"
 import { useMemo } from "react"
+import {
+  formatDateWithWeekNames,
+  isBefore,
+  tomorrow,
+  UnixTime,
+} from "../utils/date"
 
 type Props = {
   list: FoodRow[]
@@ -66,8 +71,8 @@ function Results({ list, perDay }: Props) {
 
 export default Results
 
-function isExpired(foodItem: HelperFoodRow, activeDay: moment.Moment) {
-  return foodItem.dateMoment.isBefore(activeDay, "day")
+function isExpired(foodItem: HelperFoodRow, activeDay: UnixTime) {
+  return isBefore(foodItem.unixTime, activeDay)
   // || foodItem.dateMoment.isSame(activeDay, "day")
 }
 
@@ -83,18 +88,17 @@ function calculateResults(
   const plan: PlanRow[] = []
   const sortableDate = list.map((obj) => ({
     ...obj,
-    dateMonthDay: obj.date.replace(/(\d\d?).(\d\d)/, "$2$1"),
-    dateMoment: moment(obj.date, "DDMM"),
+    unixTime: parseDate(obj.date),
   }))
   const duplicateByAmount: HelperFoodRow[] = sortableDate.flatMap((food) => {
     return R.times((i) => ({ ...food, nr: i + 1 }), food.amount || 1)
   })
   const dateAsc = R.comparator((a: HelperFoodRow, b: HelperFoodRow) => {
-    return a.dateMonthDay < b.dateMonthDay
+    return a.unixTime < b.unixTime
   })
   const sorted = R.sort(dateAsc, duplicateByAmount)
 
-  let activeDay = moment().add(1, "day")
+  let activeDay = tomorrow()
   let activeDayUsed = 0
 
   for (const foodItem of sorted) {
@@ -109,20 +113,20 @@ function calculateResults(
         ? foodItem.grams - (activeDayUsed - perDay)
         : foodItem.grams
     plan.push({
-      day: activeDay.format("ddd, DD.MM"),
+      day: formatDateWithWeekNames(activeDay),
       foodItem: { ...foodItem },
     })
 
     while (activeDayUsed >= perDay) {
       // next day, carry over
-      activeDay = moment(activeDay).add(1, "day")
+      activeDay = tomorrow(activeDay)
       activeDayUsed = activeDayUsed - perDay
 
       if (activeDayUsed > 0) {
         foodItem.usedGrams = foodItem.grams - foodItem.usedGrams
 
         plan.push({
-          day: activeDay.format("ddd, DD.MM"),
+          day: formatDateWithWeekNames(activeDay),
           foodItem: { ...foodItem },
         })
 
@@ -136,7 +140,7 @@ function calculateResults(
   const byDate = R.groupBy(({ day }: PlanRow) => day)
   const datePlan: Plan = byDate(plan)
 
-  return { date: activeDay.format("ddd, DD.MM"), expirations, datePlan }
+  return { date: formatDateWithWeekNames(activeDay), expirations, datePlan }
 }
 
 /*

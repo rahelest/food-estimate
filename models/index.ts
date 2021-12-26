@@ -1,5 +1,3 @@
-import moment from "moment"
-
 export interface FoodRow {
   id: number
   name: string
@@ -9,8 +7,7 @@ export interface FoodRow {
 }
 
 export interface HelperFoodRow extends FoodRow {
-  dateMonthDay: string
-  dateMoment: moment.Moment
+  unixTime: number
   usedGrams?: number
   nr: number
 }
