@@ -1,4 +1,3 @@
-import * as R from "ramda"
 import { FoodRow, HelperFoodRow, Plan, PlanRow } from "../models"
 import { useMemo } from "react"
 import {
@@ -7,6 +6,7 @@ import {
   tomorrow,
   UnixTime,
 } from "../utils/date"
+import { groupBy, serial, sort } from "../utils/utils"
 
 type Props = {
   list: FoodRow[]
@@ -45,7 +45,7 @@ function Results({ list, perDay }: Props) {
               display: "inline-block",
             }}
           >
-            {R.toPairs(datePlan).map(([day, foodList], index) => (
+            {Object.entries(datePlan).map(([day, foodList], index) => (
               <li key={index}>
                 <div style={{ color: "#666" }}>{day}: </div>
                 <ul>
@@ -90,13 +90,17 @@ function calculateResults(
     ...obj,
     unixTime: parseDate(obj.date),
   }))
-  const duplicateByAmount: HelperFoodRow[] = sortableDate.flatMap((food) => {
-    return R.times((i) => ({ ...food, nr: i + 1 }), food.amount || 1)
-  })
-  const dateAsc = R.comparator((a: HelperFoodRow, b: HelperFoodRow) => {
-    return a.unixTime < b.unixTime
-  })
-  const sorted = R.sort(dateAsc, duplicateByAmount)
+
+  const duplicateByAmount: HelperFoodRow[] = sortableDate.flatMap((food) =>
+    serial(food.amount || 1).map((i) => ({ ...food, nr: i + 1 }))
+  )
+
+  const sorted = sort(
+    duplicateByAmount,
+    (a: HelperFoodRow, b: HelperFoodRow) => {
+      return a.unixTime - b.unixTime
+    }
+  )
 
   let activeDay = tomorrow()
   let activeDayUsed = 0
@@ -137,27 +141,6 @@ function calculateResults(
     }
   }
 
-  const byDate = R.groupBy(({ day }: PlanRow) => day)
-  const datePlan: Plan = byDate(plan)
-
+  const datePlan: Plan = groupBy(plan, ({ day }: PlanRow) => day)
   return { date: formatDateWithWeekNames(activeDay), expirations, datePlan }
 }
-
-/*
-
-
-02.04.2020	500
-03.04.2020	400
-03.04.2020	400
-03.04.2020	450
-03.04.2020	450
-03.04.2020	500
-03.04.2020	500
-03.04.2020	500
-04.04.2020	280
-09.04.2020	500
-09.04.2020	500
-28.03.2020	400
-29.03.2020	400
-31.03.2020	600
-31.03.2020	600*/
