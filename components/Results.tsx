@@ -1,8 +1,10 @@
 import { FoodRow, HelperFoodRow, Plan, PlanRow } from "../models"
 import { useMemo } from "react"
+import styles from "./Results.module.css"
 import {
   formatDateWithWeekNames,
   isBefore,
+  parseDate,
   tomorrow,
   UnixTime,
 } from "../utils/date"
@@ -21,51 +23,60 @@ function Results({ list, perDay }: Props) {
   )
 
   return (
-    <div className="results">
-      Food: {omitEmpty.length} item(s) - Lasts until: {date} <p />
-      {date && expirations?.length ? (
-        <div style={{ float: "left", marginRight: "40px" }}>
-          <h3>Food that will expire:</h3> <p />
-          <ul>
-            {expirations.map(({ name, date, grams }, index) => (
-              <li key={index}>
-                {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
-              </li>
-            ))}
-          </ul>
+    <>
+      {/* Summary */}
+      <section className={styles.summary}>
+        <div>
+          <label>Food:</label> {omitEmpty.length} item
+          {omitEmpty.length !== 1 ? "s" : ""}
         </div>
-      ) : null}
-      {date && (
-        <div style={{ float: "left" }}>
-          <h3>Plan:</h3> <p />
-          <ul
-            style={{
-              textAlign: "left",
-              margin: "0 auto",
-              display: "inline-block",
-            }}
-          >
-            {Object.entries(datePlan).map(([day, foodList], index) => (
-              <li key={index}>
-                <div style={{ color: "#666" }}>{day}: </div>
-                <ul>
-                  {foodList.map((planRow: PlanRow, ind2: number) => {
-                    const { name, date, grams, usedGrams, nr } =
-                      planRow.foodItem
-                    return (
-                      <li key={ind2}>
-                        {name} ×{nr} ({usedGrams} / {grams}g),{" "}
-                        {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </li>
-            ))}
-          </ul>
+        <div>
+          <label>Lasts until:</label> {date}
         </div>
-      )}
-    </div>
+      </section>
+      {/* ----- */}
+      <div className={styles.results}>
+        {/* Expirations */}
+        {date && expirations?.length ? (
+          <section className={styles.block}>
+            <h3 className={styles.title}>Food that will expire</h3>
+            <ul className={styles.list}>
+              {expirations.map(({ name, date, grams }, index) => (
+                <li key={index}>
+                  {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+        {/* ---- */}
+        {/* Plan */}
+        {date && (
+          <section className={styles.block}>
+            <h3 className={styles.title}>Plan</h3>
+            <ul className={styles.list}>
+              {Object.entries(datePlan).map(([day, foodList], index) => (
+                <li key={index}>
+                  <div style={{ color: "#666" }}>{day}: </div>
+                  <ul className={styles.list}>
+                    {foodList.map((planRow: PlanRow, ind2: number) => {
+                      const { name, date, grams, usedGrams, nr } =
+                        planRow.foodItem
+                      return (
+                        <li key={ind2}>
+                          {name} #{nr} ({usedGrams} / {grams}g),{" "}
+                          {date.replace(/(\d\d)(\d\d)/, "$2.$1")}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+    </>
   )
 }
 

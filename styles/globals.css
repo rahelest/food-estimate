@@ -26,12 +26,6 @@ button {
   padding: 8px 12px;
 }
 
-.results {
-  overflow: hidden;
-  margin: 2em auto 0;
-  display: inline-block;
-}
-
 .container {
   padding: 16px;
   margin: 0 auto;

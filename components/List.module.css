@@ -15,7 +15,7 @@
   flex: 6;
 }
 
-@media screen and (max-width: 678px) {
+@media screen and (max-width: 500px) {
   .foodColumnName {
     min-width: 100%;
   }
@@ -25,12 +25,24 @@
   flex: 1;
 }
 
+.foodColumnAmount input {
+  min-width: 45px;
+}
+
 .foodColumnDate {
   flex: 2;
 }
 
+.foodColumnDate input {
+  min-width: 60px;
+}
+
 .foodColumnGrams {
   flex: 2;
+}
+
+.foodColumnGrams input {
+  min-width: 60px;
 }
 
 .foodColumnRemove {
