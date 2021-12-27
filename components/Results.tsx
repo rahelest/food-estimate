@@ -9,13 +9,13 @@ import {
   UnixTime,
 } from "../utils/date"
 import { groupBy, serial, sort } from "../utils/utils"
+import { useAppSelector } from "../store/hooks"
+import { selectPerDay } from "../store/perDaySlice"
+import { selectFoodRows } from "../store/foodSlice"
 
-type Props = {
-  list: FoodRow[]
-  perDay: number
-}
-
-function Results({ list, perDay }: Props) {
+function Results() {
+  const perDay = useAppSelector(selectPerDay)
+  const list = useAppSelector(selectFoodRows)
   const omitEmpty = useMemo(() => list.filter(({ grams }) => grams), [list])
   const { date, expirations, datePlan } = useMemo(
     () => calculateResults(omitEmpty, perDay),

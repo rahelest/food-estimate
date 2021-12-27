@@ -1,28 +1,39 @@
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { ChangeEventHandler, useEffect } from "react"
 import List from "./List"
 import Results from "./Results"
-import { FoodRow } from "../models"
 import styles from "./Estimator.module.css"
+import { useAppDispatch, useAppSelector } from "../store/hooks"
+import { selectPerDay, setPerDay } from "../store/perDaySlice"
 import { useSavedList, useSavedPerDay } from "../composables/useSavedData"
+import { selectFoodRows, setFoodRows } from "../store/foodSlice"
 
 const MIN_VALUE = 400
 const MAX_VALUE = 10000
 
 function Estimator() {
-  const { load: loadSavedList } = useSavedList()
+  const dispatch = useAppDispatch()
+  const perDay = useAppSelector(selectPerDay)
+  const list = useAppSelector(selectFoodRows)
+
+  const { load: loadSavedList, save: saveList } = useSavedList()
   const { load: loadSavedPerDay, save: savePerDay } = useSavedPerDay()
 
-  const [list, setList] = useState<FoodRow[]>(loadSavedList)
-  const [perDay, setPerDay] = useState<number>(loadSavedPerDay)
-
   const onChangePerDay: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const value = e.target.value
-    setPerDay(parseInt(value, 10))
+    dispatch(setPerDay(Number(e.target.value)))
   }
+
+  useEffect(() => {
+    dispatch(setPerDay(loadSavedPerDay()))
+    dispatch(setFoodRows(loadSavedList()))
+  }, [])
 
   useEffect(() => {
     savePerDay(perDay)
   }, [perDay, savePerDay])
+
+  useEffect(() => {
+    saveList(list)
+  }, [list, saveList])
 
   return (
     <>
@@ -43,8 +54,8 @@ function Estimator() {
           Per day value should be between {MIN_VALUE} and {MAX_VALUE}
         </label>
       ) : null}
-      <List list={list} setList={setList} />
-      {outOfBounds(perDay) ? null : <Results list={list} perDay={perDay} />}
+      <List />
+      {outOfBounds(perDay) ? null : <Results />}
     </>
   )
 }
