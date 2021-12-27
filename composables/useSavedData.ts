@@ -1,7 +1,12 @@
 import { useLocalStorage } from "./useLocalStorage"
 import { FoodRow } from "../models"
 
-export function useSavedPerDay() {
+export interface LSFieldHookInterface<T> {
+  load: () => T
+  save: (data: T) => void
+}
+
+export function useSavedPerDay(): LSFieldHookInterface<number> {
   const FIELD = "perDay"
   const { load, save } = useLocalStorage()
   return {
@@ -16,7 +21,7 @@ export function useSavedPerDay() {
   }
 }
 
-export function useSavedList() {
+export function useSavedList(): LSFieldHookInterface<FoodRow[]> {
   const { load, save } = useLocalStorage()
   return {
     load(): FoodRow[] {
@@ -47,7 +52,6 @@ function* generateId() {
     const now = Date.now()
     lastUsed = now > lastUsed ? now : lastUsed + 1
     yield lastUsed
-    continue
   }
 }
 

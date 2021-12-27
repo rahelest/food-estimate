@@ -1,7 +1,7 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Estimator from "../components/Estimator"
-import { ClientOnly } from "../composables/useHasMounted"
+import { PersistGate } from "../composables/useLocalStorage"
 
 const Home: NextPage = () => {
   return (
@@ -14,9 +14,9 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container">
-        <ClientOnly>
+        <PersistGate>
           <Estimator />
-        </ClientOnly>
+        </PersistGate>
       </main>
     </div>
   )
