@@ -29,6 +29,15 @@ function List() {
   }
 
   const week = useMemo(() => new Date(Date.now() + 1000 * 3600 * 24 * 7), [])
+  const dateSuggestions = useMemo(() => {
+    const dayMillis = 1000 * 3600 * 24
+    const pad = (num: number) => num.toString().padStart(2, "0")
+    const range = (n: number) => new Array(n).fill(1).map((e, i) => i + 1)
+    return range(7).map((day) => {
+      const date = new Date(Date.now() + dayMillis * day)
+      return pad(date.getUTCDate()) + "." + pad(date.getUTCMonth() + 1)
+    })
+  }, [])
 
   useEffect(() => {
     if (list[list.length - 1].grams) {
@@ -94,6 +103,7 @@ function List() {
                   type="number"
                   step="0.01"
                   lang="en"
+                  list="dateList"
                   value={row.date}
                   placeholder={
                     week.getDate().toString().padStart(2, "0") +
@@ -103,6 +113,11 @@ function List() {
                   onChange={(e) => onChangeDate(e.target.value, row.id)}
                 />
               </Field>
+              <datalist id="dateList">
+                {dateSuggestions.map((s) => (
+                  <option key={s} value={s} />
+                ))}
+              </datalist>
             </div>
             <div
               className={styles.foodColumnGrams}
@@ -113,12 +128,18 @@ function List() {
                   style={{ textAlign: "right" }}
                   type="number"
                   min="0"
+                  list="gramList"
                   value={row.grams}
                   onChange={(e) =>
                     onChangeNumber("grams", e.target.value, row.id)
                   }
                 />
               </Field>
+              <datalist id="gramList">
+                {[100, 200, 250, 500, 1000].map((g) => (
+                  <option key={g} value={g} />
+                ))}
+              </datalist>
             </div>
             <div className={styles.foodColumnRemove}>
               <button
