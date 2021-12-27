@@ -15,7 +15,11 @@ function List() {
   const list = useAppSelector(selectFoodRows)
 
   function onChangeNumber(field: string, value: string, id: number) {
-    dispatch(updateRow({ field, value: parseInt(value, 10), id }))
+    let parsed: string | number = parseInt(value, 10)
+    if (isNaN(parsed)) {
+      parsed = ""
+    }
+    dispatch(updateRow({ field, value: parsed, id }))
   }
 
   function onChangeDate(value: string, id: number) {
