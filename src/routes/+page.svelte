@@ -1,7 +1,7 @@
 <script lang="ts">
-  import EnterFoods from "$lib/EnterFoods.svelte";
-  import ViewResults from "$lib/ViewResults.svelte";
-  import { perDay } from "$lib/stores";
+  import EnterFoods from '$lib/EnterFoods.svelte'
+  import ViewResults from '$lib/ViewResults.svelte'
+  import { perDay } from '$lib/stores'
 
   const MIN_VALUE = 400
   const MAX_VALUE = 10000

@@ -15,18 +15,17 @@
   }
 
   function addRow() {
-    list.update(oldList => [...oldList, getEmptyRow()]);
+    list.update((oldList) => [...oldList, getEmptyRow()])
   }
 
-
   function addRowIfNeeded() {
-    if ($list[$list.length -1].grams) {
+    if ($list[$list.length - 1].grams) {
       addRow()
     }
   }
 
   function removeRow(rowId: number) {
-    list.update(oldList => oldList.filter(({ id }) => id !== rowId));
+    list.update((oldList) => oldList.filter(({ id }) => id !== rowId))
   }
 
   function clear() {
@@ -188,7 +187,6 @@
     width: auto;
     height: 27px;
   }
-
 
   .primaryButton {
     border: 1px solid #000;
