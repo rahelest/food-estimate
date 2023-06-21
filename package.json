@@ -34,7 +34,7 @@
   "type": "module",
   "dependencies": {},
   "engines": {
-    "node": ">=16.16.0",
-    "yarn": ">=1.22.5"
+    "node": "^20",
+    "pnpm": "^8.5.1"
   }
 }
