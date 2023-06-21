@@ -26,7 +26,7 @@
         <ul class="list">
           {#each results.expirations as { name, date, grams }, i (i)}
             <li>
-              {name} ({grams}g), {date.replace(/(\d\d)(\d\d)/, '$2.$1')}
+              {name} ({grams}g), {String(date).replace(/(\d\d)(\d\d)/, '$2.$1')}
             </li>
           {/each}
         </ul>
@@ -44,7 +44,7 @@
                 {#each foodList as { foodItem: { name, date, grams, usedGrams, nr } }, innerIndex (innerIndex)}
                   <li>
                     {name} #{nr} ({usedGrams} / {grams}g),{' '}
-                    {date.replace(/(\d\d)(\d\d)/, '$2.$1')}
+                    {String(date).replace(/(\d\d)(\d\d)/, '$2.$1')}
                   </li>
                 {/each}
               </ul>
