@@ -33,7 +33,7 @@
   },
   "type": "module",
   "engines": {
-    "node": "^20",
+    "node": "18.x",
     "pnpm": "^8.5.1"
   }
 }
