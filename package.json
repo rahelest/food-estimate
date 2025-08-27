@@ -38,7 +38,7 @@
     "yarn-upgrade-all": "0.7.1"
   },
   "engines": {
-    "node": ">=16.13",
+    "node": ">=22",
     "yarn": ">=3.2.1"
   },
   "packageManager": "yarn@3.2.1"
